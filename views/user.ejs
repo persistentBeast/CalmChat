@@ -10,7 +10,7 @@
 <body>
     
     <div class="container-md" style=" background-image: url(https://i.picsum.photos/id/223/4912/3264.jpg?hmac=yFw4iYM4wK1Ub5iKhVsHCiu9PN4uBamqVrZmPXJLdTo); background-size: cover;">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
               <a class="navbar-brand" href="#">CalmChat</a>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,7 @@
             <div class="h-100 p-5 bg-light border rounded-3" style="opacity: 0.9;">
                 <h2>Create Room</h2>
                 <p>Create a new room for chatting and discussions.</p>
-                <button class="btn btn-outline-secondary" type="button">Create</button>
+                <a href="/user/<%= user.id %>/create"><button class="btn btn-outline-secondary" type="button">Create</button></a>
             </div>
         </div>
 

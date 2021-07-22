@@ -10,6 +10,9 @@ const roomSchema=new schema({
         required : true,
         unique : true
     },
+
+    password : String,
+
     admin : {
         type :  schema.Types.ObjectId, ref : "user"
     },
