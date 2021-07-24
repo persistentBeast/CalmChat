@@ -48,20 +48,23 @@
                     <ul class="list-group mt-1">
                         <li class="list-group-item d-flex justify-content-center bg-dark text-white align-items-center">
                             My Rooms
-                          </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                          A list item
-                          <span class="badge bg-primary rounded-pill">14</span>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                          A second list item
-                          <span class="badge bg-primary rounded-pill">2</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                          A third list item
-                          <span class="badge bg-primary rounded-pill">1</span>
-                        </li>
-                        
+                        <% for(let room of user.rooms){%>
+                            <% if (String(room.admin)==String(user._id)) { %>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="/room/<%=room._id%>" style="text-decoration: none;"><%= room.name %></a> 
+                                <span class="badge"><span class=" badge bg-success rounded-pill">admin</span>                                     <span class="badge bg-primary rounded-pill"><%=room.members.length%> Folks </span>                                    
+                            </span>
+
+                                </li>                             
+                            <% } else {%>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="/room/<%=room._id%>" style="text-decoration: none;"><%= room.name %></a> 
+                                    <span class="badge bg-primary rounded-pill"><%=room.members.length%> Folks </span>                                    
+                                </li>  
+                            <% } %> 
+                            
+                         <% } %>                       
                     </ul>
                 </div>
             </div>
@@ -75,7 +78,7 @@
                 <div class="h-100 p-5 text-white bg-dark rounded-3" style="opacity: 0.8;" >
                     <h2>Join Room</h2>
                     <p>Join a room created by you or your acquaintance. </p>
-                    <button class="btn btn-outline-light" type="button">Join</button>
+                    <a href="/user/<%= user.id %>/join"><button class="btn btn-outline-light" type="button">Join</button></a>
                 </div>
             </div>
         <div class="col-md-6">

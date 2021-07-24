@@ -6,8 +6,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 router.get('/:id', async (req, res)=>{
-    const user = await User.findById(req.params.id);
-    
+    const user = await User.findById(req.params.id).populate('rooms');
     res.render('user', {user});
 })
 
@@ -25,15 +24,61 @@ router.post('/:id/create', async (req, res)=>{
         res.send("<h1> Sorry Room Exist </h1>");
     }else{
 
-        await bcrypt.hash(password, saltRounds, function(err, hash) {
-            if(!err){
-                const newRoom = new Room({name : roomName, password : hash, admin : req.params.id});
-                await Room.save();
+        bcrypt.hash(password, saltRounds, async function (err, hash) {
+            if (!err) {
+                const user = await User.findById(req.params.id);
+                const members = [];
+                members.push(user);
+                const newRoom = new Room({ name: roomName, password: hash, admin: req.params.id, members });
+                user.rooms.push(newRoom);
+                await newRoom.save();
+                await user.save();
                 res.redirect(`/user/${req.params.id}`);
             }
         });
 
     }
+
+})
+
+router.get('/:id/join',  (req, res)=>{
+    const userId=req.params.id;
+    res.render('joinRoomForm', {userId});
+})
+
+router.post('/:id/join', async (req, res, next)=>{
+
+    const {roomName, roomPass} = req.body;
+    const roomJoinee = await User.findById(req.params.id);
+    const roomToBeJoined = await Room.findOne({name : roomName}).populate('members');
+    if(roomToBeJoined.length==0){
+        res.send("<h1> No such room exist! </h1>");
+    }else{        
+        bcrypt.compare(roomPass, roomToBeJoined.password, async function (err, result){
+            if(result==true){               
+                let alreadyMember=false;
+                for(let i=0;i<roomToBeJoined.members.length;i++){
+                    if(String(roomToBeJoined.members[i]._id)==String(roomJoinee._id)){
+                        alreadyMember=true;
+                        break;
+                    }
+                }
+                if(alreadyMember){
+                    res.send("<h1> Already a member! </h1>");
+                }else{
+                    roomJoinee.rooms.push(roomToBeJoined);
+                    roomToBeJoined.members.push(roomJoinee);
+                    await roomJoinee.save();
+                    await roomToBeJoined.save();
+                    console.log("Room Joined!");
+                    res.redirect(`/user/${req.params.id}`);
+                }                
+            }else{
+                res.send("<h1> Forbidden! </h1>");
+            }
+        })        
+    }
+
 
 })
 

@@ -10,7 +10,10 @@ const userSchema=new schema({
         type: String,
         required: true,
         unique : true
-    }
+    },
+    rooms : [
+        { type : schema.Types.ObjectId, ref : 'room' }
+    ]
 
 });
 

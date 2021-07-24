@@ -19,9 +19,6 @@ const roomSchema=new schema({
     members : [ {
         type :  schema.Types.ObjectId, ref : "user" 
     }]
-
-
-
 });
 
 
