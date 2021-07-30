@@ -4,18 +4,20 @@ const User = require("../models/user")
 const Room = require("../models/room");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const checkLoggedIn = require("../middlewares/checkIfLoggedIn");
 
-router.get('/:id', async (req, res)=>{
+
+router.get('/:id', checkLoggedIn, async (req, res)=>{
     const user = await User.findById(req.params.id).populate('rooms');
     res.render('user', {user});
 })
 
-router.get('/:id/create',  (req, res)=>{
+router.get('/:id/create',  checkLoggedIn , (req, res)=>{
     const userId=req.params.id;
     res.render('createRoomForm', {userId});
 })
 
-router.post('/:id/create', async (req, res)=>{
+router.post('/:id/create', checkLoggedIn, async (req, res)=>{
     const {roomName, password} = req.body;
 
     const room_exist = await Room.count({name : roomName});
@@ -41,12 +43,12 @@ router.post('/:id/create', async (req, res)=>{
 
 })
 
-router.get('/:id/join',  (req, res)=>{
+router.get('/:id/join', checkLoggedIn,  (req, res)=>{
     const userId=req.params.id;
     res.render('joinRoomForm', {userId});
 })
 
-router.post('/:id/join', async (req, res, next)=>{
+router.post('/:id/join', checkLoggedIn, async (req, res, next)=>{
 
     const {roomName, roomPass} = req.body;
     const roomJoinee = await User.findById(req.params.id);
